@@ -24,6 +24,6 @@ Suggested BibTeX after publishing:
   title={Stochastic Schr{\"o}dinger Diffusion Models for Pure-State Ensemble Generation},
   author={Xu, Jian and Chen, Wei and Li, Chao and Zheng, Jingyuan and Zeng, Delu and Paisley, John and Zhao, Qibin},
   year={2026},
-  note={Preprint manuscript. Project page: \url{https://xujianscut.github.io/ssdm-project/}}
+  note={Preprint manuscript. Project page: \url{https://xujianscut.github.io/ssdm-project/}. PDF: \url{https://xujianscut.github.io/ssdm-project/assets/ssdm_preprint.pdf}}
 }
 ```

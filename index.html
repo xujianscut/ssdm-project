@@ -12,6 +12,7 @@
       --muted: #5f6878;
       --line: #d8dde6;
       --accent: #2059b8;
+      --accent2: #287c6b;
       --soft: #eef4ff;
       --paper: #ffffff;
       --bg: #f6f7fa;
@@ -25,7 +26,7 @@
       background: var(--bg);
     }
     main {
-      max-width: 920px;
+      max-width: 980px;
       margin: 0 auto;
       padding: 48px 22px 72px;
     }
@@ -45,10 +46,26 @@
       margin: 34px 0 10px;
     }
     p { margin: 0 0 14px; }
+    a { color: var(--accent); }
     .authors {
       color: var(--muted);
       font-size: 1.05rem;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
+    }
+    .venue {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 4px 9px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .tagline {
+      font-size: 1.18rem;
+      color: var(--muted);
+      max-width: 800px;
     }
     .links {
       display: flex;
@@ -78,6 +95,63 @@
       padding: 22px;
       margin: 16px 0;
     }
+    figure { margin: 18px 0 4px; }
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    figcaption {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 8px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      background: #fbfcff;
+      padding: 14px;
+    }
+    .metric strong {
+      display: block;
+      color: var(--accent2);
+      font-size: 1.5rem;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 9px 7px;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5fb;
+      font-weight: 750;
+    }
+    .best {
+      font-weight: 750;
+      color: var(--accent2);
+    }
+    .pdf-frame {
+      width: 100%;
+      min-height: 640px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
     pre {
       white-space: pre-wrap;
       overflow-wrap: anywhere;
@@ -87,10 +161,11 @@
       font-size: 0.9rem;
       line-height: 1.45;
     }
-    .tagline {
-      font-size: 1.18rem;
-      color: var(--muted);
-      max-width: 760px;
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      table { font-size: 0.86rem; }
+      th, td { padding: 7px 5px; }
+      .pdf-frame { min-height: 460px; }
     }
   </style>
 </head>
@@ -99,30 +174,95 @@
     <header>
       <h1>Stochastic Schrodinger Diffusion Models for Pure-State Ensemble Generation</h1>
       <p class="authors">Jian Xu, Wei Chen, Chao Li, Jingyuan Zheng, Delu Zeng, John Paisley, Qibin Zhao</p>
+      <span class="venue">Preprint manuscript</span>
       <p class="tagline">
         SSDMs formulate score-based generative modeling directly on the complex projective manifold of quantum pure states, using stochastic Schrodinger dynamics and Fubini-Study geometry.
       </p>
       <div class="links">
-        <a class="button primary" href="assets/ssdm_preprint.pdf">Preprint PDF</a>
+        <a class="button primary" href="assets/ssdm_preprint.pdf">Direct PDF</a>
         <a class="button" href="#bibtex">BibTeX</a>
+        <a class="button" href="https://github.com/xujianscut/ssdm-project">GitHub</a>
       </div>
     </header>
 
     <section>
+      <h2>At a Glance</h2>
+      <p>
+        SSDM is an intrinsic score-based model for distributions over quantum pure states. Instead of learning in a redundant ambient vector space, it defines diffusion and reverse-time sampling on the projective manifold of normalized states modulo global phase.
+      </p>
+      <div class="grid">
+        <div class="metric"><strong>Intrinsic</strong>Diffusion on complex projective state space.</div>
+        <div class="metric"><strong>SSE</strong>Forward process with stochastic Schrodinger realization.</div>
+        <div class="metric"><strong>Local-time</strong>Analytic teacher score in Fubini-Study normal coordinates.</div>
+      </div>
+    </section>
+
+    <section>
       <h2>Abstract</h2>
       <p>
-        In quantum machine learning, classical data are often encoded as quantum pure states and processed directly as quantum representations, motivating representation-level generative modeling that samples new quantum states from an underlying pure-state ensemble. Stochastic Schrodinger Diffusion Models (SSDMs) define an intrinsic score-based generative framework on complex projective space endowed with the Fubini-Study metric.
+        In quantum machine learning, classical data are often encoded as quantum pure states and processed directly as quantum representations, motivating representation-level generative modeling that samples new quantum states from an underlying pure-state ensemble.
       </p>
       <p>
-        SSDMs formulate a forward Riemannian diffusion with a stochastic Schrodinger equation realization and derive reverse-time dynamics driven by the Riemannian score. A local-time objective based on a local Euclidean Ornstein-Uhlenbeck approximation in Fubini-Study normal coordinates enables tractable training without analytic transition densities.
+        Stochastic Schrodinger Diffusion Models define an intrinsic score-based generative framework on complex projective space endowed with the Fubini-Study metric. SSDMs formulate a forward Riemannian diffusion with a stochastic Schrodinger equation realization and derive reverse-time dynamics driven by the Riemannian score.
+      </p>
+      <p>
+        A local-time objective based on a local Euclidean Ornstein-Uhlenbeck approximation in Fubini-Study normal coordinates enables tractable training without analytic transition densities.
       </p>
     </section>
 
     <section>
-      <h2>Key Ideas</h2>
-      <p>Intrinsic diffusion directly on the quantum pure-state manifold rather than in ambient Euclidean coordinates.</p>
-      <p>Stochastic Schrodinger dynamics provide a physically motivated realization of the forward noising process.</p>
-      <p>Local tangent-space score supervision gives a practical training signal for curved projective state spaces.</p>
+      <h2>Method Overview</h2>
+      <p>
+        The forward process gradually noises pure states on the Fubini-Study manifold. The learned reverse-time dynamics use a Riemannian score field to transport samples back toward the target ensemble.
+      </p>
+      <figure>
+        <img src="assets/sde.png" alt="Forward and reverse diffusion diagram for SSDM">
+        <figcaption>Forward diffusion and reverse-time generation on the quantum pure-state manifold.</figcaption>
+      </figure>
+      <div class="links">
+        <a class="button" href="assets/ssdm_method.pdf">Method schematic PDF</a>
+        <a class="button" href="assets/stability.pdf">Stability figure PDF</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Representative Results</h2>
+      <p>
+        SSDM improves distribution matching across 2-, 4-, and 6-qubit pure-state ensemble generation benchmarks. Higher is better for fidelity; lower is better for MMD, observable discrepancy, and entanglement Wasserstein distance.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Qubits</th>
+            <th>Method</th>
+            <th>Fidelity</th>
+            <th>MMD</th>
+            <th>Obs. gap</th>
+            <th>Ent. W1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2</td><td>Best baseline</td><td>0.8991</td><td>1.31e-2</td><td>1.03e-1</td><td>6.94e-2</td></tr>
+          <tr><td>2</td><td class="best">SSDM</td><td class="best">0.9582</td><td class="best">2.04e-3</td><td class="best">2.86e-2</td><td class="best">2.69e-2</td></tr>
+          <tr><td>4</td><td>Best baseline</td><td>0.5062</td><td>2.22e-1</td><td>4.44e-1</td><td>4.64e-1</td></tr>
+          <tr><td>4</td><td class="best">SSDM</td><td class="best">0.8144</td><td class="best">1.44e-2</td><td class="best">9.75e-2</td><td class="best">1.66e-1</td></tr>
+          <tr><td>6</td><td>Best baseline</td><td>0.1435</td><td>4.00e-1</td><td>5.09e-1</td><td>1.94e-1</td></tr>
+          <tr><td>6</td><td class="best">SSDM</td><td class="best">0.3922</td><td class="best">9.69e-2</td><td class="best">3.05e-1</td><td>4.66e-1</td></tr>
+        </tbody>
+      </table>
+      <figure>
+        <img src="assets/bloch.png" alt="Bloch sphere visual summary for SSDM benchmarks">
+        <figcaption>Bloch-style visualization of benchmark state ensembles and generated samples.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Preprint</h2>
+      <p>
+        Direct PDF link:
+        <a href="https://xujianscut.github.io/ssdm-project/assets/ssdm_preprint.pdf">https://xujianscut.github.io/ssdm-project/assets/ssdm_preprint.pdf</a>
+      </p>
+      <iframe class="pdf-frame" src="assets/ssdm_preprint.pdf" title="SSDM preprint PDF"></iframe>
     </section>
 
     <section id="bibtex">
@@ -131,7 +271,7 @@
   title={Stochastic Schr{\"o}dinger Diffusion Models for Pure-State Ensemble Generation},
   author={Xu, Jian and Chen, Wei and Li, Chao and Zheng, Jingyuan and Zeng, Delu and Paisley, John and Zhao, Qibin},
   year={2026},
-  note={Preprint manuscript. Project page: \url{https://xujianscut.github.io/ssdm-project/}}
+  note={Preprint manuscript. Project page: \url{https://xujianscut.github.io/ssdm-project/}. PDF: \url{https://xujianscut.github.io/ssdm-project/assets/ssdm_preprint.pdf}}
 }</pre>
     </section>
   </main>
