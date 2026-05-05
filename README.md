@@ -1,23 +1,39 @@
-# SSDM Project Page
+# Stochastic Schrodinger Diffusion Models
 
-Static project page for:
+Project page for the preprint:
 
 **Stochastic Schrodinger Diffusion Models for Pure-State Ensemble Generation**
 
-## Local contents
+Jian Xu, Wei Chen, Chao Li, Jingyuan Zheng, Delu Zeng, John Paisley, Qibin Zhao
 
-- `index.html`: GitHub Pages-ready project page.
-- `assets/ssdm_preprint.pdf`: local preprint PDF.
+## Overview
 
-## Publish on GitHub Pages
+Stochastic Schrodinger Diffusion Models (SSDMs) study score-based generative modeling directly on the quantum pure-state manifold. The model treats pure states as points on complex projective space and defines both the forward noising process and the reverse-time sampler intrinsically with respect to Fubini-Study geometry.
 
-1. Create a new GitHub repository, for example `ssdm-project`.
-2. Add the files in this folder to the repository root.
-3. In GitHub, open `Settings -> Pages`.
-4. Set source to `Deploy from a branch`, branch `main`, folder `/root`.
-5. After the page is live, update the BibTeX entry in `references.bib` with the real URL.
+The project page includes the preprint PDF, a method illustration, the main training-stability figure, Algorithm 1, and the complete main quantitative table.
 
-Suggested BibTeX after publishing:
+## Links
+
+- Project page: https://xujianscut.github.io/ssdm-project/
+- Direct PDF: https://xujianscut.github.io/ssdm-project/assets/ssdm_preprint.pdf
+
+## Method Summary
+
+SSDM combines three ingredients:
+
+- An intrinsic diffusion process on the complex projective manifold of normalized quantum states modulo global phase.
+- A reverse-time generative process driven by a learned Riemannian score.
+- A local-time analytic teacher score in Fubini-Study normal coordinates for stable score matching.
+
+The core reverse-time model learns
+
+```text
+s_theta(psi, t) ~= grad_FS log p_t(psi),
+```
+
+and samples by integrating the corresponding reverse stochastic dynamics on the pure-state manifold.
+
+## Citation
 
 ```bibtex
 @misc{xu2026ssdm,
