@@ -152,6 +152,22 @@
       border: 1px solid var(--line);
       background: #fff;
     }
+    .formula {
+      overflow-x: auto;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      margin: 12px 0;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.95rem;
+    }
+    ol.algorithm {
+      margin: 12px 0 0;
+      padding-left: 22px;
+    }
+    ol.algorithm li {
+      margin: 7px 0;
+    }
     pre {
       white-space: pre-wrap;
       overflow-wrap: anywhere;
@@ -216,8 +232,8 @@
         The forward process gradually noises pure states on the Fubini-Study manifold. The learned reverse-time dynamics use a Riemannian score field to transport samples back toward the target ensemble.
       </p>
       <figure>
-        <img src="assets/sde.png" alt="Forward and reverse diffusion diagram for SSDM">
-        <figcaption>Forward diffusion and reverse-time generation on the quantum pure-state manifold.</figcaption>
+        <img src="assets/ssdm_method.png" alt="Illustration of forward diffusion and reverse-time generation on the quantum pure-state manifold">
+        <figcaption>Illustration of the forward diffusion on the quantum pure-state manifold and its reverse-time generative process driven by a learned Riemannian score.</figcaption>
       </figure>
       <div class="links">
         <a class="button" href="assets/ssdm_method.pdf">Method schematic PDF</a>
@@ -226,9 +242,43 @@
     </section>
 
     <section>
-      <h2>Representative Results</h2>
+      <h2>Core Formulation</h2>
       <p>
-        SSDM improves distribution matching across 2-, 4-, and 6-qubit pure-state ensemble generation benchmarks. Higher is better for fidelity; lower is better for MMD, observable discrepancy, and entanglement Wasserstein distance.
+        SSDM learns a Riemannian score field on the pure-state manifold
+        <em>M = CP<sup>d-1</sup></em>. The forward diffusion is defined intrinsically with Fubini-Study geometry, while the reverse-time sampler uses the learned score to move samples from a simple prior back to the data ensemble.
+      </p>
+      <div class="formula">
+        d&psi;<sub>t</sub> = b(&psi;<sub>t</sub>,t) dt + &sigma;(t) dW<sub>t</sub><sup>FS</sup>, &nbsp;&nbsp;
+        s<sub>&theta;</sub>(&psi;,t) &asymp; &nabla;<sub>FS</sub> log p<sub>t</sub>(&psi;)
+      </div>
+      <p>
+        Since transition densities on complex projective space are generally unavailable, training uses a local-time teacher. In Fubini-Study normal coordinates, short-time motion is approximated by a Euclidean OU/VP step in the tangent space.
+      </p>
+      <div class="formula">
+        z = log<sub>&phi;</sub>(&psi;<sub>t</sub>), &nbsp;&nbsp;
+        s<sup>(teach)</sup> &approx; &nabla;<sub>z</sub> log q<sub>&delta;t</sub>(z | &phi;)
+      </div>
+    </section>
+
+    <section>
+      <h2>Algorithm 1: Stochastic Schrodinger Diffusion Models</h2>
+      <ol class="algorithm">
+        <li><strong>Input:</strong> data samples {&psi;<sub>0</sub><sup>(i)</sup>}, horizon T, step sizes &Delta;t and &delta;t, schedules &sigma;(t), &lambda;(t), and a prior sampler for p<sub>T</sub>.</li>
+        <li><strong>Training:</strong> sample &psi;<sub>0</sub> from p<sub>0</sub> and t uniformly from (&delta;t, T).</li>
+        <li>Simulate the forward Riemannian OU diffusion to obtain (&psi;<sub>t-&delta;t</sub>, &psi;<sub>t</sub>).</li>
+        <li>Compute normal coordinates z = log<sub>&psi;<sub>t-&delta;t</sub></sub>(&psi;<sub>t</sub>).</li>
+        <li>Compute the local-time teacher score in tangent space and map it back to the manifold.</li>
+        <li>Update &theta; by matching s<sub>&theta;</sub>(&psi;<sub>t</sub>,t) to the teacher score.</li>
+        <li><strong>Sampling:</strong> draw &psi;<sub>T</sub> from p<sub>T</sub> and integrate reverse-time dynamics from T to 0.</li>
+        <li>At each reverse step, draw tangent noise, form the score-corrected update, and move by the Fubini-Study exponential map or a retraction.</li>
+        <li><strong>Return:</strong> &psi;<sub>0</sub> as a generated sample from the learned pure-state ensemble.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Main Results</h2>
+      <p>
+        Full Table 1 from the preprint. Higher is better for fidelity; lower is better for MMD, observable discrepancy, and entanglement Wasserstein distance.
       </p>
       <table>
         <thead>
@@ -242,17 +292,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>2</td><td>Best baseline</td><td>0.8991</td><td>1.31e-2</td><td>1.03e-1</td><td>6.94e-2</td></tr>
+          <tr><td>2</td><td>QDDPM</td><td>0.8991</td><td>1.3092e-2</td><td>1.0294e-1</td><td>6.9427e-2</td></tr>
+          <tr><td>2</td><td>QGAN</td><td>0.5261</td><td>4.3099e-1</td><td>6.0502e-1</td><td>3.4518e-1</td></tr>
+          <tr><td>2</td><td>Euclidean VP-SDE</td><td>0.2487</td><td>7.1676e-1</td><td>9.7489e-1</td><td>2.8790e-1</td></tr>
+          <tr><td>2</td><td>RSGM</td><td>0.2889</td><td>6.3424e-1</td><td>9.1988e-1</td><td>3.0743e-1</td></tr>
           <tr><td>2</td><td class="best">SSDM</td><td class="best">0.9582</td><td class="best">2.04e-3</td><td class="best">2.86e-2</td><td class="best">2.69e-2</td></tr>
-          <tr><td>4</td><td>Best baseline</td><td>0.5062</td><td>2.22e-1</td><td>4.44e-1</td><td>4.64e-1</td></tr>
+          <tr><td>4</td><td>QDDPM</td><td>0.5062</td><td>2.2183e-1</td><td>4.4425e-1</td><td>4.6388e-1</td></tr>
+          <tr><td>4</td><td>QGAN</td><td>0.0969</td><td>7.5063e-1</td><td>8.6419e-1</td><td>6.8635e-1</td></tr>
+          <tr><td>4</td><td>Euclidean VP-SDE</td><td>0.0539</td><td>7.7408e-1</td><td>9.0754e-1</td><td>6.6624e-1</td></tr>
+          <tr><td>4</td><td>RSGM</td><td>0.0859</td><td>7.0681e-1</td><td>8.6678e-1</td><td>6.6605e-1</td></tr>
           <tr><td>4</td><td class="best">SSDM</td><td class="best">0.8144</td><td class="best">1.44e-2</td><td class="best">9.75e-2</td><td class="best">1.66e-1</td></tr>
-          <tr><td>6</td><td>Best baseline</td><td>0.1435</td><td>4.00e-1</td><td>5.09e-1</td><td>1.94e-1</td></tr>
+          <tr><td>6</td><td>QDDPM</td><td>0.1435</td><td>3.9985e-1</td><td>5.0898e-1</td><td>1.9413e-1</td></tr>
+          <tr><td>6</td><td>QGAN</td><td>0.0246</td><td>4.7364e-1</td><td>6.7442e-1</td><td>6.8376e-1</td></tr>
+          <tr><td>6</td><td>Euclidean VP-SDE</td><td>0.0143</td><td>4.6681e-1</td><td>6.8395e-1</td><td>6.8180e-1</td></tr>
+          <tr><td>6</td><td>RSGM</td><td>0.0603</td><td>4.0124e-1</td><td>6.3683e-1</td><td>6.8753e-1</td></tr>
           <tr><td>6</td><td class="best">SSDM</td><td class="best">0.3922</td><td class="best">9.69e-2</td><td class="best">3.05e-1</td><td>4.66e-1</td></tr>
         </tbody>
       </table>
       <figure>
-        <img src="assets/bloch.png" alt="Bloch sphere visual summary for SSDM benchmarks">
-        <figcaption>Bloch-style visualization of benchmark state ensembles and generated samples.</figcaption>
+        <img src="assets/stability.png" alt="Training stability across system sizes">
+        <figcaption>Figure 2. Training stability across system sizes n in {2, 4, 6}. Columns report training loss, F0, MMD, Delta_obs, and entropic Wasserstein distance.</figcaption>
       </figure>
     </section>
 
